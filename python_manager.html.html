@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Career Learning Manager</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* CSS Variables - Light Mode (Default) */
+        :root {
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --border-accent: #3b82f6;
+            --bg-accent: #eff6ff;
+            --fill-accent: #3b82f6;
+            --text-accent: #1d4ed8;
+            --bg-success: #f0fdf4;
+            --border-success: #22c55e;
+            --fill-success: #22c55e;
+            --text-success: #15803d;
+            --bg-warning: #fffbeb;
+            --border-warning: #f59e0b;
+            --fill-warning: #f59e0b;
+            --text-warning: #b45309;
+            --bg-pro: #f3e8ff;
+            --border-pro: #a855f7;
+            --fill-pro: #a855f7;
+            --text-pro: #7e22ce;
+            --bg-danger: #fef2f2;
+            --border-danger: #ef4444;
+            --fill-danger: #ef4444;
+            --text-danger: #b91c1c;
+            --surface-1: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        /* CSS Variables - Dark Mode */
+        [data-theme="dark"] {
+            --bg-body: #1e293b;
+            --bg-card: #0f172a;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --border-accent: #3b82f6;
+            --bg-accent: #1e3a8a;
+            --fill-accent: #3b82f6;
+            --text-accent: #60a5fa;
+            --bg-success: #052e16;
+            --border-success: #22c55e;
+            --fill-success: #22c55e;
+            --text-success: #86efac;
+            --bg-warning: #451a03;
+            --border-warning: #f59e0b;
+            --fill-warning: #f59e0b;
+            --text-warning: #fcd34d;
+            --bg-pro: #2e1065;
+            --border-pro: #a855f7;
+            --fill-pro: #a855f7;
+            --text-pro: #d8b4fe;
+            --bg-danger: #450a0a;
+            --border-danger: #ef4444;
+            --fill-danger: #ef4444;
+            --text-danger: #fca5a5;
+            --surface-1: #0f172a;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+        }
+
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif;background:var(--bg-body);color:var(--text-primary);line-height:1.6;transition:background 0.3s, color 0.3s}
+        .app{max-width:900px;margin:0 auto;padding:1rem}
+        .nav{display:flex;gap:0.5rem;overflow-x:auto;padding-bottom:0.5rem;margin-bottom:1.5rem;border-bottom:1px solid var(--border);flex-wrap:nowrap;justify-content:space-between}
+        .nav-btn{background:transparent;border:none;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-weight:500;color:var(--text-muted);white-space:nowrap;transition:all 0.2s}
+        .nav-btn:hover{background:var(--bg-accent);color:var(--text-accent)}
+        .nav-btn.active{background:var(--bg-accent);color:var(--text-accent);border-bottom:2px solid var(--fill-accent)}
+        .view{display:none;animation:fadeIn 0.3s ease}
+        .view.active{display:block}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        
+        /* Components */
+        .card{background:var(--bg-card);border-radius:12px;padding:1.25rem;box-shadow:var(--shadow-sm);border:1px solid var(--border);margin-bottom:1rem;transition:background 0.3s, border 0.3s}
+        .card-title{font-size:1.1rem;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+        .btn{display:inline-block;padding:0.5rem 1rem;border-radius:8px;border:none;font-weight:500;cursor:pointer;transition:all 0.2s;background:var(--fill-accent);color:white;text-decoration:none}
+        .btn:hover{opacity:0.9;transform:translateY(-1px)}
+        .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text-secondary)}
+        .btn-outline:hover{background:var(--bg-accent);border-color:var(--border-accent)}
+        .btn-success{background:var(--fill-success);color:white}
+        .btn-danger{background:var(--fill-danger);color:white}
+        .btn-sm{padding:0.2rem 0.5rem;font-size:0.8rem}
+        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+        .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+        .stat-card{text-align:center;padding:1rem}
+        .stat-card .num{font-size:2rem;font-weight:700;color:var(--text-primary)}
+        .stat-card .label{font-size:0.85rem;color:var(--text-muted)}
+        .badge{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:0.75rem;font-weight:600;background:var(--bg-accent);color:var(--text-accent)}
+        .badge-success{background:var(--bg-success);color:var(--text-success)}
+        .badge-warning{background:var(--bg-warning);color:var(--text-warning)}
+        .badge-pro{background:var(--bg-pro);color:var(--text-pro)}
+        input, select, textarea{width:100%;padding:0.6rem;border:1px solid var(--border);border-radius:8px;font-size:1rem;margin-bottom:0.5rem;background:var(--bg-card);color:var(--text-primary);transition:background 0.3s, color 0.3s, border 0.3s}
+        input:focus, select:focus, textarea:focus{outline:2px solid var(--fill-accent);border-color:transparent}
+        .phase-card{border:1px solid var(--border);border-radius:8px;margin-bottom:0.75rem;overflow:hidden}
+        .phase-header{padding:0.75rem 1rem;background:var(--bg-body);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+        .phase-header:hover{background:var(--bg-accent)}
+        .phase-body{padding:1rem;display:none;border-top:1px solid var(--border)}
+        .phase-body.open{display:block}
+        .module-item{display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px dashed var(--border);font-size:0.95rem;align-items:center}
+        .module-item:last-child{border-bottom:none}
+        .form-group{margin-bottom:1rem}
+        .form-group label{display:block;font-weight:500;margin-bottom:0.25rem;color:var(--text-secondary)}
+        .log-item{padding:0.5rem 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
+        .log-item:last-child{border-bottom:none}
+        .chart-container{height:200px;position:relative;margin-top:0.5rem}
+        .streak-display{display:flex;align-items:center;gap:0.5rem;font-size:1.2rem}
+        .streak-display .num{font-size:2rem;font-weight:700;color:var(--text-warning)}
+        
+        /* Toast Notification */
+        #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg-card);border:1px solid var(--border);padding:0.75rem 1.5rem;border-radius:8px;box-shadow:var(--shadow-md);opacity:0;transition:opacity 0.3s;z-index:100;color:var(--text-primary);text-align:center}
+        #toast.show{opacity:1}
+        
+        /* AI Prompt Button Group */
+        .ai-prompt-group{display:inline-flex;gap:2px;margin-right:0.5rem}
+        .ai-prompt-group .btn{padding:0.1rem 0.3rem;font-size:0.7rem;line-height:1.4}
+        
+        @media (max-width: 600px) {
+            .grid-2, .grid-3 {grid-template-columns:1fr}
+            .nav {flex-wrap:wrap;justify-content:center}
+            .nav-btn {flex:1;text-align:center;font-size:0.85rem;padding:0.4rem}
+            .stat-card .num {font-size:1.5rem}
+            .module-item {flex-wrap:wrap;gap:0.5rem}
+        }
+    </style>
+</head>
+<body>
+<div class="app" id="app">
+    <!-- Toast Notification -->
+    <div id="toast">Copied!</div>
+
+    <!-- Onboarding View -->
+    <div class="view active" id="view-onboarding">
+        <div class="card" style="max-width:500px;margin:2rem auto">
+            <h2 style="text-align:center;margin-bottom:1.5rem">🐍 Python Career Learning Manager</h2>
+            <p style="text-align:center;color:var(--text-muted);margin-bottom:1rem">اپنا نام اور career منتخب کریں تاکہ آپ کا personalized plan generate ہو سکے</p>
+            <div class="form-group">
+                <label>آپ کا نام</label>
+                <input type="text" id="input-name" placeholder="اپنا نام لکھیں" required>
+            </div>
+            <div class="form-group">
+                <label>Career Path</label>
+                <select id="input-career">
+                    <option value="fullstack">⭐ Full-Stack Python (All 20 Phases)</option>
+                    <option value="web">🌐 Web Development (Web, Backend, API)</option>
+                    <option value="ai">🤖 AI / ML Engineer (AI, Deep Learning)</option>
+                    <option value="data">📊 Data Scientist (Data Analysis, ML)</option>
+                    <option value="automation">⚙️ Automation (Scripts, Scraping, Bots)</option>
+                    <option value="desktop">🖥️ Desktop Apps (GUI, Tools)</option>
+                    <option value="security">🔒 Cybersecurity (SecOps, Hacking)</option>
+                </select>
+            </div>
+            <div class="grid-2" style="gap:1rem">
+                <div class="form-group">
+                    <label>روزانہ گھنٹے (Hours/Day)</label>
+                    <input type="number" id="input-hours" value="4" min="1" max="12">
+                </div>
+                <div class="form-group">
+                    <label>ہفتے میں دن (Days/Week)</label>
+                    <input type="number" id="input-days" value="6" min="1" max="7">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>شروع کرنے کی تاریخ (Start Date)</label>
+                <input type="date" id="input-date">
+            </div>
+            <button class="btn" style="width:100%;padding:0.75rem" onclick="startOnboarding()">🚀 شروع کریں</button>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div id="main-app" style="display:none">
+        <nav class="nav">
+            <button class="nav-btn active" data-view="view-dashboard">📊 Dashboard</button>
+            <button class="nav-btn" data-view="view-roadmap">🗺️ Roadmap</button>
+            <button class="nav-btn" data-view="view-projects">📂 Projects</button>
+            <button class="nav-btn" data-view="view-logs">📝 Study Log</button>
+            <button class="nav-btn" data-view="view-charts">📈 Charts</button>
+            <button class="nav-btn" data-view="view-guide">💼 Career Guide</button>
+            <button class="nav-btn" data-view="view-settings">⚙️ Settings</button>
+        </nav>
+
+        <!-- Dashboard -->
+        <div class="view" id="view-dashboard">
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:0.5rem">
+                    <div>
+                        <h2 id="dash-name" style="font-size:1.25rem">👋 User</h2>
+                        <p id="dash-career" style="color:var(--text-muted)">Career: Full-Stack</p>
+                    </div>
+                    <div class="streak-display">
+                        <span>🔥</span>
+                        <span class="num" id="dash-streak">0</span>
+                        <span style="font-size:0.9rem;color:var(--text-muted)">days streak</span>
+                    </div>
+                </div>
+                <div style="margin-top:1rem">
+                    <div style="display:flex;justify-content:space-between;font-size:0.9rem">
+                        <span>Overall Progress</span>
+                        <span id="dash-progress-pct">0%</span>
+                    </div>
+                    <div style="background:var(--border);border-radius:99px;height:10px;overflow:hidden;margin-top:0.25rem">
+                        <div id="dash-progress-bar" style="background:var(--fill-accent);height:100%;width:0%;transition:width 0.3s"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-3">
+                <div class="card stat-card">
+                    <div class="num" id="dash-phases">0</div>
+                    <div class="label">Phases Complete</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="num" id="dash-hours">0</div>
+                    <div class="label">Total Hours Logged</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="num" id="dash-daysleft">0</div>
+                    <div class="label">Days Left (Est.)</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">🎯 Today's Focus</div>
+                <p id="dash-todayfocus" style="color:var(--text-secondary)">Loading...</p>
+                <button class="btn btn-outline" style="margin-top:0.5rem" onclick="navigate('view-roadmap')">Go to Roadmap</button>
+            </div>
+        </div>
+
+        <!-- Roadmap -->
+        <div class="view" id="view-roadmap">
+            <div class="card">
+                <div class="card-title">🗺️ Your Career Roadmap</div>
+                <p style="color:var(--text-muted);font-size:0.9rem">Expand each phase to see modules. Mark phases complete as you finish them.</p>
+            </div>
+            <div id="roadmap-container"></div>
+        </div>
+
+        <!-- Projects -->
+        <div class="view" id="view-projects">
+            <div class="card">
+                <div class="card-title">📂 My Projects</div>
+                <p style="color:var(--text-muted);font-size:0.9rem">Track your Mini Projects and Capstones. Paste your GitHub links to build your portfolio.</p>
+                <form id="project-form" onsubmit="addProject(event)">
+                    <div class="grid-2" style="gap:1rem">
+                        <div class="form-group">
+                            <label>Phase</label>
+                            <select id="project-phase"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Project Name</label>
+                            <input type="text" id="project-name" required placeholder="e.g. Quiz Game">
+                        </div>
+                    </div>
+                    <div class="grid-2" style="gap:1rem">
+                        <div class="form-group">
+                            <label>GitHub URL</label>
+                            <input type="url" id="project-url" placeholder="https://github.com/username/project">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="project-status">
+                                <option value="in-progress">In Progress</option>
+                                <option value="done">✅ Done</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">+ Add Project</button>
+                </form>
+            </div>
+            <div class="card">
+                <div class="card-title">Project List</div>
+                <div id="project-list">
+                    <p style="color:var(--text-muted);font-size:0.9rem">No projects added yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Study Log -->
+        <div class="view" id="view-logs">
+            <div class="card">
+                <div class="card-title">📝 Log Today's Study</div>
+                <form id="log-form" onsubmit="logHours(event)">
+                    <div class="grid-2" style="gap:1rem">
+                        <div class="form-group">
+                            <label>گھنٹے (Hours)</label>
+                            <input type="number" id="log-hours" value="1" min="0.5" step="0.5" required>
+                        </div>
+                        <div class="form-group">
+                            <label>آج کیا پڑھا؟ (Topic)</label>
+                            <input type="text" id="log-topic" placeholder="e.g. Lists, Decorators" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>نوٹس (Optional)</label>
+                        <input type="text" id="log-notes" placeholder="What did you learn?">
+                    </div>
+                    <button type="submit" class="btn btn-success">✅ Log Hours</button>
+                </form>
+            </div>
+            <div class="card">
+                <div class="card-title">Recent Activity</div>
+                <div id="log-list">
+                    <p style="color:var(--text-muted);font-size:0.9rem">No logs yet. Start your journey!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="view" id="view-charts">
+            <div class="card">
+                <div class="card-title">📈 Weekly Study Trends</div>
+                <div class="chart-container">
+                    <canvas id="weeklyChart"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">🍩 Phase Completion</div>
+                <div class="chart-container">
+                    <canvas id="donutChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Career Guide -->
+        <div class="view" id="view-guide">
+            <div class="card">
+                <div class="card-title">💼 Career Readiness Guide</div>
+                <div id="guide-content">
+                    <p style="color:var(--text-muted)">Complete your first phases to unlock career insights!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="view" id="view-settings">
+            <div class="card">
+                <div class="card-title">⚙️ Settings</div>
+                <div class="form-group">
+                    <label>اپنا نام تبدیل کریں</label>
+                    <input type="text" id="settings-name" placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label>روزانہ گھنٹے تبدیل کریں</label>
+                    <input type="number" id="settings-hours" min="1" max="12">
+                </div>
+                <div class="form-group" style="display:flex;align-items:center;gap:1rem;margin-top:0.5rem">
+                    <label style="margin:0">🌙 Dark Mode</label>
+                    <input type="checkbox" id="dark-mode-toggle" style="width:auto;margin:0" onchange="toggleDarkMode()">
+                </div>
+                <button class="btn" onclick="updateSettings()">Update Profile</button>
+                <hr style="margin:1rem 0;border:0;border-top:1px solid var(--border)">
+                <button class="btn btn-outline" onclick="exportProgress()">📥 Export Progress (JSON)</button>
+                <button class="btn btn-danger" style="margin-top:0.5rem;width:100%" onclick="resetAll()">🗑️ Reset All Progress</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==========================================
+// DATA (From Python_Master_Roadmap_2026.pdf & AI_Learning_Guide_2026.pdf)
+// Phase 1-2 are fully populated with exact prompts. Phase 3-20 have placeholders.
+// ==========================================
+const PHASES = [
+    // ===== PHASE 1 =====
+    { id: 1, name: "Computer Fundamentals", weeks: 2, hours: 48, modules: [
+        { name: "How Computers Work", 
+          learn: "Explain how a computer works to a complete beginner. Cover: CPU (what it does), RAM (why it matters), Storage (HDD vs SSD), Input/Output devices. Use simple real-life analogies. Draw ASCII diagrams. End with 3 questions to test me.",
+          practice: "Give me 10 exercises on computer components - 3 fill-in-the-blank sentences - 3 match-the-component (component → function) - 2 true/false statements - 2 scenario questions (e.g. 'My PC is slow, which part could be the issue?') Do NOT show answers yet — I will try first.",
+          test: "Create a 10-question MCQ test on 'How Computers Work'. Topics: CPU roles, RAM vs Storage, input vs output devices, basic PC operations. Show correct answers only at the very end.",
+          project: "Build: 'Computer Components Diagram (labeled drawing)' Ask AI: 'Help me build Computer Components Diagram (labeled drawing) step by step using How Computers Work. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Number Systems", 
+          learn: "Teach me the 4 number systems: Binary (base-2), Decimal (base-10), Octal (base-8), Hexadecimal (base-16). For each: what it is, where it is used, and step-by-step conversion examples. Show: Decimal 255 converted to all 3 other systems with working. End with 5 conversion exercises for me.",
+          practice: "Give me 15 number conversion exercises: - 5 Decimal → Binary - 5 Binary → Decimal - 3 Decimal → Hexadecimal - 2 Hex → Decimal Start easy (small numbers) and increase difficulty. Show expected answers separately.",
+          test: "Create a 10-question test on Number Systems. Mix: conversion problems, 'which base is this' questions, and true/false. Show answers at the end.",
+          project: "Build: 'Hand-drawn Number System Conversion Table' Ask AI: 'Help me build Hand-drawn Number System Conversion Table step by step using Number Systems (Binary, Decimal, Octal, Hex). Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "CPU, RAM, ROM, SSD, HDD", 
+          learn: "Teach me in detail: CPU (cores, clock speed, cache), RAM (volatile, speed), ROM (non-volatile), SSD (flash, fast), HDD (magnetic, cheap). Compare them clearly with a table. Give real product examples (e.g. Intel i7, Samsung SSD). Then explain: what happens when I open Chrome — which hardware is involved?",
+          practice: "Give me 8 exercises on computer hardware: - 3 'which hardware does this job?' scenarios - 2 comparison questions (SSD vs HDD, RAM vs ROM) - 2 true/false on hardware specs - 1 'fix this PC problem' scenario",
+          test: "Create a 10-question MCQ test on CPU, RAM, ROM, SSD, HDD. Include: purpose of each, speed comparisons, volatile vs non-volatile, capacity units.",
+          project: "Build: 'Hardware Comparison Chart (hand-drawn table)' Ask AI: 'Help me build Hardware Comparison Chart (hand-drawn table) step by step using CPU, RAM, ROM, SSD, HDD. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Operating Systems Basics", 
+          learn: "Explain Operating Systems to me as a beginner. Cover: - What an OS does (resource management, UI, file system) - Types: Windows, Linux, macOS - Process management, memory management, file systems - Why developers prefer Linux/Give examples and ASCII diagrams.",
+          practice: "Give me 8 OS exercises: - 3 'what does the OS do in this situation?' scenarios - 2 comparison (Linux vs Windows for development) - 2 true/false - 1 short explanation question",
+          test: "Create a 10-question test on Operating Systems Basics. Topics: OS functions, types of OS, process vs program, file system concepts.",
+          project: "Build: 'OS Comparison Table (Windows vs Linux vs macOS)' Ask AI: 'Help me build OS Comparison Table (Windows vs Linux vs macOS) step by step using Operating Systems Basics. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Command Line & Terminal Basics", 
+          learn: "Teach me command line basics step by step. Cover: - Why developers use terminal (faster, more powerful) - Essential commands: pwd, ls, cd, mkdir, rm, cp, mv, cat, echo, touch, man - File paths (absolute vs relative) - Flags and options (e.g. ls -la) Show examples for EACH command. Let me practice each one.",
+          practice: "Give me 10 command line exercises — real scenarios: 1. 'Navigate to Desktop, create folder 'projects', go inside it' 2. 'List all files including hidden ones' 3-10. More realistic navigation and file management tasks. Tell me the exact commands I should type.",
+          test: "Create a 10-question test on Command Line. Mix: 'what does this command do?', 'write the command for this task', true/false.",
+          project: "Build: 'Personal Command Line Cheat Sheet (25+ commands)' Ask AI: 'Help me build Personal Command Line Cheat Sheet (25+ commands) step by step using Command Line & Terminal Basics. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "File Systems & Directory Structure", 
+          learn: "Explain file systems to me: what they are, why they exist. Cover: directory trees, paths (absolute vs relative), file types, extensions. Show the typical directory structure of: Windows (C:\), Linux (/) macOS (/) Explain: what lives in /home, /etc, /usr, /var on Linux.",
+          practice: "Give me 7 exercises on file systems: - 2 'write the absolute path' exercises - 2 'write the relative path from X to Y' exercises - 2 'what type of file is this?' questions - 1 'design a folder structure for a Python project'",
+          test: "Create a 10-question test on File Systems and Directories.",
+          project: "Build: 'File System Tree Diagram of my computer' Ask AI: 'Help me build File System Tree Diagram of my computer step by step using File Systems & Directory Structure. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Internet Basics (IP, DNS, HTTP)", 
+          learn: "Explain how the internet works to a beginner. Cover: - IP addresses (IPv4 vs IPv6) - DNS (what it is, why it matters — like a phonebook) - HTTP vs HTTPS (difference, why HTTPS matters) - How a webpage loads: Browser → DNS → Server → Response - Ports (80, 443, 3000, 8080) - Client vs Server model Use real examples and ASCII diagrams.",
+          practice: "Give me 8 exercises on Internet concepts: - 3 'what happens when...' scenarios - 2 'which protocol is used for...' questions - 2 true/false on HTTP/HTTPS - 1 'explain this to a 10-year-old' exercise",
+          test: "Create a 10-question test on Internet Basics: IP, DNS, HTTP, HTTPS, ports, client-server.",
+          project: "Build: 'How a webpage loads — step-by-step explanation diagram' Ask AI: 'Help me build How a webpage loads — step-by-step explanation diagram step by step using Internet Basics (IP, DNS, HTTP/HTTPS). Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Programming Fundamentals & Algorithms", 
+          learn: "Explain programming fundamentals to a complete beginner. - What is programming? Why do we code? - What is an algorithm? (step-by-step instructions) - Key concepts: input, output, variables, conditions, loops - What makes a good algorithm? (correctness, efficiency) Give 3 real-life algorithm examples before any code.",
+          practice: "Give me 5 exercises: write algorithms in plain English (not code) for: 1. Making tea: 2. Checking if a number is even or odd: 3. Finding the biggest number in a list: 4. Login system (check username and password): 5. Sorting 5 books alphabetically",
+          test: "Create a 10-question test on Programming Fundamentals and Algorithms.",
+          project: "Build: 'Algorithm for making tea — written as pseudocode + flowchart' Ask AI: 'Help me build Algorithm for making tea — written as pseudocode + flowchart step by step using Programming Fundamentals & Algorithms. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Flowcharts", 
+          learn: "Teach me flowcharts completely. - What symbols mean: oval (start/end), rectangle (process), diamond (decision), arrow (flow) - Rules for drawing correct flowcharts - How to convert a text algorithm to a flowchart Show me 3 complete flowchart examples: 1. Check if number is positive/negative 2. Simple login system 3. Grade calculator (A/B/C/D/F)",
+          practice: "Give me 5 flowchart exercises. For each, describe the algorithm in plain text. I will draw the flowchart. Then you check my description if I tell you my answer. Tasks: 1) Even/Odd checker 2) ATM withdrawal 3) Temperature converter 4) Exam pass/fail 5) Shopping discount",
+          test: "Give me 5 flowchart questions: Read a described flowchart and tell me what it does, spot the errors, and fill in missing symbols.",
+          project: "Build: 'Flowchart for a Login System (draw on paper)' Ask AI: 'Help me build Flowchart for a Login System (draw on paper) step by step using Flowcharts. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Pseudocode", 
+          learn: "Teach me pseudocode completely. - What is pseudocode? Why use it before writing real code? - Rules and conventions for writing pseudocode - Keywords: START, END, IF, ELSE, FOR, WHILE, INPUT, OUTPUT, RETURN Show 3 complete pseudocode examples: 1. Find maximum of 3 numbers 2. Simple login system 3. Calculate average of 5 grades",
+          practice: "Give me 5 pseudocode writing exercises: 1. Temperature converter 2. Shopping cart total + discount 3. Simple bank ATM 4. Number guessing game logic 5. Library book search Write pseudocode for each — I will try first, then you show yours.",
+          test: "Give me a 10-question pseudocode test: read pseudocode and explain what it does, write pseudocode for described tasks, spot errors.",
+          project: "Build: 'Grade Calculator Pseudocode + Flowchart' Ask AI: 'Help me build Grade Calculator Pseudocode + Flowchart step by step using Pseudocode. Start with the plan, then guide me through each step. Let me try before showing you the code.'" }
+    ] },
+    // ===== PHASE 2 =====
+    { id: 2, name: "Python Fundamentals", weeks: 4, hours: 96, modules: [
+        { name: "Python Installation & Setup", 
+          learn: "Walk me through setting up Python on [my OS] step by step. Cover: Install Python 3.x, verify with 'python --version', install VS Code, install Python extension. Explain: what is the PATH variable and why it matters, where Python installs. Show me how to run my first Python script: print('Hello, World!')",
+          practice: "Help me complete these setup tasks: 1. Show me how to open terminal in VS Code 2. How to check Python version 3. How to run a .py file from terminal 4. How to use Python REPL (interactive mode) 5. Explain: why do some people type 'python' and others type 'python3'?",
+          test: "Create a 10-question test on Python Installation & Setup concepts.",
+          project: "Build: 'My Development Environment Setup Guide (personal notes)' Ask AI: 'Help me build My Development Environment Setup Guide (personal notes) step by step using Python Installation & Setup. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "IDEs: VS Code, PyCharm, Jupyter", 
+          learn: "Compare VS Code, PyCharm, and Jupyter Notebook for Python: - VS Code: best extensions for Python, keyboard shortcuts, terminal integration - PyCharm: pros/cons, when to use it - Jupyter Notebook: what it is, when to use it (data science) Focus on VS Code — show me the 10 most useful keyboard shortcuts and extensions.",
+          practice: "Give me 5 VS Code exercises: 1. Install these extensions: Python, Pylance, Black Formatter 2. Set Python interpreter 3. Create a Python file and run it 4. Use the debugger: set a breakpoint and step through code 5. Use the terminal inside VS Code",
+          test: "Create a 10-question test on Python IDEs and development environment setup.",
+          project: "Build: 'VS Code Python Setup Config (settings.json and extensions list)' Ask AI: 'Help me build VS Code Python Setup Config (settings.json and extensions list) step by step using IDEs: VS Code, PyCharm, Jupyter Notebook. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "pip & Virtual Environments (venv)", 
+          learn: "Teach me pip and virtual environments completely: - What is pip? (package manager for Python) - pip install, pip uninstall, pip list, pip freeze - What is a virtual environment? Why is it critical? - Create venv: python -m venv myenv - Activate on Windows vs Mac/Linux - pip freeze > requirements.txt - pip install -r requirements.txt Show all commands with explanations.",
+          practice: "Give me 8 pip/venv exercises: 1. Create a virtual environment named 'mypyproject' 2. Activate it on your OS 3. Install requests, Flask, numpy 4. Check installed packages 5. Export to requirements.txt 6. Deactivate the venv 7. Delete and recreate from requirements.txt 8. Explain: what happens without venv when working on 2 projects?",
+          test: "Create a 10-question test on pip and virtual environments.",
+          project: "Build: 'requirements.txt for a sample project with 5 packages' Ask AI: 'Help me build requirements.txt for a sample project with 5 packages step by step using pip & Virtual Environments (venv). Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Variables & Constants", 
+          learn: "Teach me Python Variables completely: - What is a variable? How Python stores it in memory - Naming rules (valid names, snake_case convention) - Multiple assignment: a = b = c = 5 and a, b, c = 1, 2, 3 - Constants in Python (ALL_CAPS convention) - Dynamic typing: a = 5 then a = 'hello' — why this works - type() function and id() function Show 10 code examples with output.",
+          practice: "Give me 10 variable exercises: 1-3: Basic variable assignment and printing 4-5: Multiple assignment in one line 6-7: Swap two variables (2 ways: with temp, without temp) 8: Name 5 valid Python variable names and 5 invalid ones 9: Use constants for PI, MAX_SIZE 10: Dynamic typing demo Show expected output. I solve first, then check.",
+          test: "Create a 10-question test on Python Variables: - 4 MCQ on syntax and rules - 3 'what is the output' questions - 2 'spot the error' questions - 1 'write the code' question",
+          project: "Build: 'Personal Information Display Script (using 10+ variables)' Ask AI: 'Help me build Personal Information Display Script (using 10+ variables) step by step using Variables & Constants. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Data Types (int, float, str, bool, None)", 
+          learn: "Teach me all Python data types: - int: whole numbers, range, operations, binary/hex literals (0b1010, 0xFF) - float: decimal numbers, precision issues (0.1 + 0.2), round() - str: text, quotes, escape characters (\\n, \\t), raw strings (r'') - bool: True/False, what evaluates as truthy/falsy - None: what it represents, when to use it - bytes and bytearray (brief intro) Show type() for each. Give 10 code examples.",
+          practice: "Give me 12 data type exercises: - 3 int operations (division types: /, //, %) - 3 float precision questions - 3 str operations (upper, lower, len) - 2 bool evaluation questions - 1 None check exercise",
+          test: "Create a 10-question test on Python Data Types. Include code output predictions and 'what type is this?' questions.",
+          project: "Build: 'Data Type Explorer Script (detect and display any data type)' Ask AI: 'Help me build Data Type Explorer Script (detect and display any data type) step by step using Data Types (int, float, str, bool, None). Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Type Casting & Type Checking", 
+          learn: "Teach me Python Type Casting: - int(): str to int, float to int (truncation, not rounding) - float(): int to float, str to float - str(): any to string - bool(): what converts to True vs False - list(), tuple(), set(): conversion between collections - type() function: check current type - isinstance() function: check type safely Show what FAILS and why: int('hello'), float('abc'). Give 8 code examples with output.",
+          practice: "Give me 10 type casting exercises: - 4 'convert and calculate' problems (e.g. input is string, do math) - 3 'what does this return?' questions - 2 'find the bug' exercises (wrong type used) - 1 'write a safe type converter' function",
+          test: "Create a 10-question test on Type Casting and Type Checking in Python.",
+          project: "Build: 'Unit Converter Script (str → float → calculate → str output)' Ask AI: 'Help me build Unit Converter Script (str → float → calculate → str output) step by step using Type Casting & Type Checking. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Operators (Arithmetic, Logical, Bitwise)", 
+          learn: "Teach me ALL Python operators: Arithmetic: +, -, *, /, //, %, ** (with examples and order of operations) - Comparison: ==, !=, <, >, <=, >= (return True/False) - Logical: and, or, not (truth tables for each) - Assignment: =, +=, -=, *=, /=, //=, %=, **= - Identity: is, is not (vs ==) - Membership: in, not in - Bitwise: &, |, ^, ~, <<, >> (brief intro) Operator precedence table. 15 code examples.",
+          practice: "Give me 15 operator exercises: 5 arithmetic (including PEMDAS/BODMAS order) - 3 comparison chains (e.g. 1 < x < 10) - 4 logical (and/or/not combinations) - 3 'is vs ==' questions",
+          test: "Create a 10-question test on Python Operators. Mix output prediction, operator selection, and error detection.",
+          project: "Build: 'Calculator Script with all operator types' Ask AI: 'Help me build Calculator Script with all operator types step by step using Operators (Arithmetic, Comparison, Logical, Bitwise). Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Input & Output (input(), print())", 
+          learn: "Teach me Python Input and Output completely - print() - sep, end, file parameters - print() with multiple values - f-strings in print() - input(): always returns string, why this matters - int(input()) pattern for numbers - Multiple inputs on one line: a, b = input().split() - Common input error: not converting type Show 10 complete examples with output.",
+          practice: "Give me 10 input/output exercises: 1. Print your name, age, city in one line with sep= 2. Print without newline using end='' 3. Get name from user, greet them 4. Get two numbers, add them (handle string conversion) 5. Get name and age on one line (split) 6-10: More real-world input programs",
+          test: "Create a 10-question test on Python Input/Output.",
+          project: "Build: 'Interactive Personal Profile Input Program' Ask AI: 'Help me build Interactive Personal Profile Input Program step by step using Input & Output (input(), print()). Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "String Formatting (f-strings, format, %)", 
+          learn: "Teach me all Python string formatting methods: - % formatting (old): 'Hello %s, you are %d years old' % (name, age) - format() method: 'Hello {}, you are {} years old'.format(name, age) - f-strings (modern, BEST): f'Hello {name}, you are {age} years old' - f-string advanced: {value:.2f}, {value:>10}, {value:,} - Multi-line strings and triple quotes - String methods: upper(), lower(), strip(), replace(), split(), join() Show 15 examples of f-string formatting.",
+          practice: "Give me 10 string formatting exercises: 1-3: Basic f-string formatting 4-5: Number formatting (2 decimal places, thousands separator) 6-7: Alignment (left, right, center justify) 8: Table formatting using f-strings 9-10: Format a receipt and a student report card",
+          test: "Create a 10-question test on Python String Formatting.",
+          project: "Build: 'Receipt/Invoice Generator Script using f-strings' Ask AI: 'Help me build Receipt/Invoice Generator Script using f-strings step by step using String Formatting (f-strings, format(), %). Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Comments & Docstrings", 
+          learn: "Teach me Python Comments and Documentation: - Single-line comments: # this is a comment - Multi-line comments: using multiple # lines - Inline comments (use sparingly) - Docstrings: triple quotes for functions, classes, modules - Google style docstrings vs NumPy style - What makes a GOOD comment vs bad comment - Why to document code (for you in 6 months, for teammates) Show examples of well-documented vs poorly documented code.",
+          practice: "Give me these exercises: 1. Take this undocumented function — add proper docstring 2. Write comments for a 20-line program 3. Write Google-style docstring for a calculator area() function 4. Identify: which comments are useful vs useless in this code 5. Document a complete program with function docstrings",
+          test: "Create a 10-question test on Python Comments and Documentation best practices.",
+          project: "Build: 'Fully documented Calculator with docstrings' Ask AI: 'Help me build Fully documented Calculator with docstrings step by step using Comments & Docstrings. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "PEP 8 Style Guide", 
+          learn: "Teach me PEP 8 — Python's official style guide: - Indentation: 4 spaces (not tabs) - Line length: max 79 characters - Blank lines: 2 between top-level functions/classes - Imports: at top, one per line, grouped (stdlib, third-party, local) - Naming: snake_case for variables/functions, CamelCase for classes, ALL_CAPS for constants - Spaces around operators: x = 5 not x=5 - Don't use spaces inside brackets: f(x) not f( x ) Show BAD code and then GOOD PEP 8 version for each rule.",
+          practice: "I'll give you 10 code snippets — for each, list all PEP 8 violations and show the corrected version: [You generate 10 intentionally badly formatted Python snippets and ask me to fix them]",
+          test: "Create a 10-question PEP 8 test: 'is this PEP 8 compliant?', 'what is wrong here?', 'fix this code' questions.",
+          project: "Build: 'Refactor a messy Python file to PEP 8 standards' Ask AI: 'Help me build Refactor a messy Python file to PEP 8 standards step by step using PEP 8 Style Guide. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Error Messages & Reading Tracebacks", 
+          learn: "Teach me how to read Python error messages and tracebacks: - Traceback structure: what each line means - Most common errors: SyntaxError, NameError, TypeError, ValueError, IndexError, KeyError, AttributeError, IndentationError, ImportError, ZeroDivisionError - For EACH error: what causes it, example code, how to fix it - How to Google a Python error effectively - How to use ChatGPT/Claude to debug errors Show 10 real error examples with full tracebacks and fixes.",
+          practice: "Give me 10 broken Python programs — one for each error type above. I will: read the traceback, identify the error type, and describe how to fix it. Then show me the correct fix.",
+          test: "Create a 10-question test: read tracebacks and identify the error type + fix.",
+          project: "Build: 'Error Dictionary (10+ common errors with explanations)' Ask AI: 'Help me build Error Dictionary (10+ common errors with explanations) step by step using Error Messages & Reading Tracebacks. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Python Keywords & Reserved Words", 
+          learn: "Teach me all Python keywords and their purpose: Group them: Value keywords (True, False, None), Operator keywords (and, or, not, in, is), Control flow (if, elif, else, for, while, break, continue, pass), Function/Class (def, return, lambda, class, pass), Exception (try, except, finally, raise, assert), Import (import, from, as), Context (with), Async (async, await), Others (del, global, nonlocal, yield) Show a one-line example for each keyword.",
+          practice: "Give me 10 exercises using Python keywords: - 3 using control flow keywords: - 2 using exception handling keywords: - 2 using function keywords: - 2 using import keywords: - 1 using async keyword",
+          test: "Create a 10-question test on Python keywords: 'what does this keyword do?', 'which keyword is missing?', fill-in-blank.",
+          project: "Build: 'Python Keywords Reference Card (one-page cheat sheet)' Ask AI: 'Help me build Python Keywords Reference Card (one-page cheat sheet) step by step using Python Keywords & Reserved Words. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Virtual Environments Deep Dive", 
+          learn: "Deep dive into Python virtual environments: - The problem without venv: global package conflicts - venv vs virtualenv vs conda vs pipenv vs poetry - Commands for venv: create, activate (Win/Mac/Linux), deactivate, delete - .gitignore: always exclude venv folder - requirements.txt: freeze and install - pyproject.toml: modern alternative - IDE integration: select venv as interpreter - Best practice: one venv per project Show a complete workflow from project start to finish.",
+          practice: "Give me a workflow exercise: 1. Create new project 'my_webapp' 2. Create venv, activate it 3. Install Flask==2.3.0, requests, python-dotenv 4. Freeze to requirements.txt 5. Show .gitignore content 6. Simulate collaborator installing from requirements.txt",
+          test: "Create a 10-question test on virtual environments in Python.",
+          project: "Build: 'Project setup script: auto-creates venv + installs requirements' Ask AI: 'Help me build Project setup script: auto-creates venv + installs requirements step by step using Virtual Environments Deep Dive. Start with the plan, then guide me through each step. Let me try before showing you the code.'" },
+        { name: "Python Interpreter & REPL", 
+          learn: "Teach me Python Interpreter and REPL: - What is the Python interpreter? How it executes code - Interactive REPL: start with 'python' or 'python3' - REPL tricks: help(), dir(), type() - IPython: enhanced REPL with magic commands (%timeit, %run, %paste) - Jupyter Notebook: browser-based REPL with cells - Script mode vs interactive mode: when to use each - How Python runs .py files step by step (compile to bytecode → execute) Show 10 REPL session examples.",
+          practice: "Give me 8 REPL exercises: - Use dir() to explore a string and list object - Use help() on 3 built-in functions - Use _ to recall last result - Time a for loop with %timeit in IPython - Run a script from REPL with %run",
+          test: "Create a 10-question test on Python Interpreter and REPL usage.",
+          project: "Build: 'Python REPL Cheat Sheet (20+ useful interactive commands)' Ask AI: 'Help me build Python REPL Cheat Sheet (20+ useful interactive commands) step by step using Python Interpreter & REPL. Start with the plan, then guide me through each step. Let me try before showing you the code.'" }
+    ] },
+    // ===== PHASE 3 (Placeholders) =====
+    { id: 3, name: "Control Flow", weeks: 4, hours: 96, modules: [
+        { name: "Boolean Logic & Truthiness", learn: "Replace with LEARN prompt from PDF", practice: "Replace with PRACTICE prompt from PDF", test: "Replace with TEST prompt from PDF", project: "Replace with PROJECT prompt from PDF" },
+        { name: "if / elif / else Statements", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "for Loops & range()", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "while Loops", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "break, continue, pass", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "enumerate() & zip()", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Nested Loops & Loop Optimization", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 4 (Placeholders) =====
+    { id: 4, name: "Python Collections", weeks: 5, hours: 120, modules: [
+        { name: "Strings Deep Dive", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Lists & List Methods", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Tuples & Tuple Operations", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Sets & Set Operations", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Dictionaries & Dict Methods", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "List, Set & Dict Comprehensions", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "collections Module (Counter, defaultdict, deque)", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 5 (Placeholders) =====
+    { id: 5, name: "Functions & Modules", weeks: 4, hours: 96, modules: [
+        { name: "Defining Functions & Parameters", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "*args and **kwargs", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Scope & LEGB Rule", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Lambda & Higher-Order Functions", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Recursion", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Modules, Packages & Import System", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 6 (Placeholders) =====
+    { id: 6, name: "OOP (Object-Oriented Programming)", weeks: 3, hours: 72, modules: [
+        { name: "Classes & Objects", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Encapsulation & Access Modifiers", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Inheritance & MRO", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Polymorphism & Abstraction", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Magic/Dunder Methods", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Dataclasses & Properties", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "SOLID Principles", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 7 (Placeholders) =====
+    { id: 7, name: "Advanced Python", weeks: 3, hours: 72, modules: [
+        { name: "Decorators", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Generators & Iterators", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Context Managers", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Async Programming (asyncio)", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Type Hints & typing Module", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Threading & Multiprocessing", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Regular Expressions (re module)", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 8 (Placeholders) =====
+    { id: 8, name: "Files & Databases", weeks: 2, hours: 48, modules: [
+        { name: "File Reading & Writing", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "CSV & JSON", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "SQLite with Python", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "SQLAlchemy ORM", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "MySQL & PostgreSQL", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Environment Variables & .env", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 9 (Placeholders) =====
+    { id: 9, name: "Git & Linux", weeks: 2, hours: 48, modules: [
+        { name: "Git Core Commands", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Git Branching & Merging", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "GitHub: PRs, Issues & Actions", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Linux Command Line", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Bash Scripting", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 10 (Placeholders) =====
+    { id: 10, name: "Networking & APIs", weeks: 3, hours: 72, modules: [
+        { name: "HTTP & REST Concepts", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "requests Library", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "API Authentication (Keys, OAuth, JWT)", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Postman & API Testing", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "WebSockets", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 11 (Placeholders) =====
+    { id: 11, name: "Web Development (Flask, Django, FastAPI)", weeks: 5, hours: 120, modules: [
+        { name: "Flask Basics (Routes & Templates)", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Flask Forms & Authentication", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Django Models & Admin", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Django REST Framework (DRF)", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "FastAPI Complete", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Deployment (Gunicorn, Nginx, Render)", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 12 (Placeholders) =====
+    { id: 12, name: "Automation & Web Scraping", weeks: 2, hours: 48, modules: [
+        { name: "File & Email Automation", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "BeautifulSoup4 Web Scraping", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Selenium Browser Automation", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Excel & PDF Automation", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 13 (Placeholders) =====
+    { id: 13, name: "Desktop Apps (Tkinter, PyQt)", weeks: 2, hours: 48, modules: [
+        { name: "Tkinter Basics", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "CustomTkinter Modern GUI", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "PyQt6 & PyInstaller", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 14 (Placeholders) =====
+    { id: 14, name: "Data Science (NumPy, Pandas, Viz)", weeks: 4, hours: 96, modules: [
+        { name: "NumPy Arrays & Operations", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Pandas DataFrames", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Data Visualization (Matplotlib & Seaborn)", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Exploratory Data Analysis (EDA)", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Feature Engineering & Preprocessing", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 15 (Placeholders) =====
+    { id: 15, name: "Machine Learning (Scikit-learn)", weeks: 4, hours: 96, modules: [
+        { name: "ML Concepts & Scikit-learn", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Linear & Logistic Regression", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Tree-based Models (Decision Tree, Random Forest)", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Model Evaluation & Tuning", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Clustering & PCA", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 16 (Placeholders) =====
+    { id: 16, name: "Deep Learning (TF, PyTorch)", weeks: 4, hours: 96, modules: [
+        { name: "Neural Networks & TensorFlow/Keras", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "CNN for Image Classification", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "RNN & LSTM", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "PyTorch Fundamentals", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Hugging Face & Transformers", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 17 (Placeholders) =====
+    { id: 17, name: "Cloud & DevOps (Docker, AWS)", weeks: 3, hours: 72, modules: [
+        { name: "Docker Fundamentals", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "GitHub Actions CI/CD", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "AWS Basics (EC2, S3, Lambda)", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 18 (Placeholders) =====
+    { id: 18, name: "Cybersecurity", weeks: 2, hours: 48, modules: [
+        { name: "Hashing & Encryption", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "OWASP Top 10 & Secure Coding", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Python Port Scanner & Network Tools", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 19 (Placeholders) =====
+    { id: 19, name: "Professional Projects", weeks: 5, hours: 120, modules: [
+        { name: "Full-Stack Web App", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "AI Chatbot with OpenAI/Gemini API", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "ML Model Deployment", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Data Dashboard (Streamlit/Plotly Dash)", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Open Source Contribution", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] },
+    // ===== PHASE 20 (Placeholders) =====
+    { id: 20, name: "Career Prep (Interviews, Jobs)", weeks: 2, hours: 48, modules: [
+        { name: "Resume & Portfolio Building", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Technical Interview Prep (LeetCode)", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "System Design Basics", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Behavioral Interview (STAR Method)", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" },
+        { name: "Freelancing & Career Launch", learn: "Replace with LEARN prompt", practice: "Replace with PRACTICE prompt", test: "Replace with TEST prompt", project: "Replace with PROJECT prompt" }
+    ] }
+];
+
+const CAREER_PATHS = {
+    "fullstack": { name: "⭐ Full-Stack Python", phases: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20] },
+    "web": { name: "🌐 Web Development", phases: [1,2,3,4,5,6,8,9,10,11,17] },
+    "ai": { name: "🤖 AI / ML Engineer", phases: [1,2,3,4,5,6,7,14,15,16] },
+    "data": { name: "📊 Data Scientist", phases: [1,2,3,4,5,6,14,15] },
+    "automation": { name: "⚙️ Automation", phases: [1,2,3,4,5,6,12] },
+    "desktop": { name: "🖥️ Desktop Apps", phases: [1,2,3,4,5,6,13] },
+    "security": { name: "🔒 Cybersecurity", phases: [1,2,3,4,5,6,18] }
+};
+
+const JOB_LEVELS = [
+    { minPhases: 0, title: "Beginner", description: "Learn the fundamentals. Focus on completing Phase 1-6." },
+    { minPhases: 6, title: "Junior Intern / Trainee", description: "You can apply for internships. Build small CLI tools." },
+    { minPhases: 10, title: "Junior Python Developer", description: "You are ready for entry-level roles. Start applying!" },
+    { minPhases: 14, title: "Mid-Level / Specialist", description: "You have deep skills. Target specific roles (Web/Data/AI)." },
+    { minPhases: 18, title: "Senior / Professional", description: "You are a strong candidate for senior roles. Contribute to open source." },
+    { minPhases: 20, title: "Full-Stack Master", description: "You are a complete software engineer. Build your own SaaS!" }
+];
+
+// ==========================================
+// STATE MANAGEMENT (localStorage)
+// ==========================================
+let state = {
+    user: { name: "", career: "", hoursPerDay: 4, daysPerWeek: 6, startDate: null },
+    progress: { completedPhases: [], completedModules: [] },
+    logs: [], // { date: "2026-07-11", hours: 1, topic: "Intro", notes: "" }
+    projects: [], // { id: unique, phaseId: int, name: "Quiz Game", url: "https://...", status: "in-progress" | "done" }
+    settings: { darkMode: false }
+};
+
+let projectIdCounter = 0;
+
+function loadState() {
+    const saved = localStorage.getItem('pythonManagerState');
+    if (saved) {
+        const parsed = JSON.parse(saved);
+        state = {
+            ...state,
+            ...parsed,
+            projects: parsed.projects || [],
+            settings: parsed.settings || { darkMode: false }
+        };
+        return true;
+    }
+    return false;
+}
+
+function saveState() {
+    localStorage.setItem('pythonManagerState', JSON.stringify(state));
+}
+
+// ==========================================
+// CORE FUNCTIONS
+// ==========================================
+function getCareerPhases() {
+    const career = state.user.career;
+    const ids = CAREER_PATHS[career] ? CAREER_PATHS[career].phases : [];
+    return PHASES.filter(p => ids.includes(p.id));
+}
+
+function getTotalHoursForCareer() {
+    return getCareerPhases().reduce((sum, p) => sum + p.hours, 0);
+}
+
+function getCompletedHours() {
+    return state.logs.reduce((sum, log) => sum + log.hours, 0);
+}
+
+function getCompletePhaseCount() {
+    return state.progress.completedPhases.length;
+}
+
+function getTotalPhases() {
+    return getCareerPhases().length;
+}
+
+function getProgressPct() {
+    const total = getTotalPhases();
+    if (total === 0) return 0;
+    return Math.round((state.progress.completedPhases.length / total) * 100);
+}
+
+function getStudyStreak() {
+    if (state.logs.length === 0) return 0;
+    const sorted = [...state.logs].sort((a, b) => new Date(b.date) - new Date(a.date));
+    let streak = 1;
+    let currentDate = new Date(sorted[0].date);
+    currentDate.setHours(0,0,0,0);
+    
+    for (let i = 1; i < sorted.length; i++) {
+        let prevDate = new Date(sorted[i].date);
+        prevDate.setHours(0,0,0,0);
+        let diffDays = Math.floor((currentDate - prevDate) / (1000 * 60 * 60 * 24));
+        if (diffDays === 1) {
+            streak++;
+            currentDate = prevDate;
+        } else if (diffDays === 0) {
+            continue;
+        } else {
+            break;
+        }
+    }
+    return streak;
+}
+
+function getDaysLeft() {
+    const totalHours = getTotalHoursForCareer();
+    const logged = getCompletedHours();
+    const remaining = Math.max(0, totalHours - logged);
+    const dailyHours = state.user.hoursPerDay;
+    const daysPerWeek = state.user.daysPerWeek;
+    if (dailyHours === 0 || daysPerWeek === 0) return 0;
+    const studyDays = remaining / dailyHours;
+    const weeks = Math.ceil(studyDays / daysPerWeek);
+    return weeks * 7;
+}
+
+function getTodayFocus() {
+    const phases = getCareerPhases();
+    for (let p of phases) {
+        if (!state.progress.completedPhases.includes(p.id)) {
+            for (let m of p.modules) {
+                if (!state.progress.completedModules.includes(`${p.id}-${m.name}`)) {
+                    return `Phase ${p.id}: ${p.name} — ${m.name}`;
+                }
+            }
+            return `Phase ${p.id}: ${p.name} (All modules in progress)`;
+        }
+    }
+    return "🎉 All phases completed! Start working on your portfolio.";
+}
+
+// Toast Notification
+function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._timer);
+    el._timer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// ==========================================
+// UI RENDER FUNCTIONS
+// ==========================================
+function renderDashboard() {
+    document.getElementById('dash-name').textContent = `👋 ${state.user.name}`;
+    document.getElementById('dash-career').textContent = `Career: ${CAREER_PATHS[state.user.career]?.name || 'Not set'}`;
+    document.getElementById('dash-streak').textContent = getStudyStreak();
+    document.getElementById('dash-progress-pct').textContent = `${getProgressPct()}%`;
+    document.getElementById('dash-progress-bar').style.width = `${getProgressPct()}%`;
+    document.getElementById('dash-phases').textContent = `${getCompletePhaseCount()} / ${getTotalPhases()}`;
+    document.getElementById('dash-hours').textContent = getCompletedHours();
+    document.getElementById('dash-daysleft').textContent = getDaysLeft();
+    document.getElementById('dash-todayfocus').textContent = getTodayFocus();
+}
+
+function renderRoadmap() {
+    const container = document.getElementById('roadmap-container');
+    const phases = getCareerPhases();
+    if (phases.length === 0) {
+        container.innerHTML = `<div class="card"><p>No phases found for this career path.</p></div>`;
+        return;
+    }
+    
+    let html = '';
+    phases.forEach((p, index) => {
+        const isComplete = state.progress.completedPhases.includes(p.id);
+        const isActive = !isComplete && (index === 0 || state.progress.completedPhases.includes(phases[index-1].id));
+        let statusBadge = '';
+        if (isComplete) statusBadge = '<span class="badge badge-success">✅ Complete</span>';
+        else if (isActive) statusBadge = '<span class="badge badge-warning">⚡ Active</span>';
+        else statusBadge = '<span class="badge">🔒 Locked</span>';
+        
+        html += `
+        <div class="phase-card">
+            <div class="phase-header" onclick="togglePhase(${p.id})">
+                <div>
+                    <strong>Phase ${p.id}: ${p.name}</strong>
+                    <span style="font-size:0.85rem;color:var(--text-muted);margin-left:0.5rem">(${p.weeks} weeks, ${p.hours} hrs)</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:0.5rem">
+                    ${statusBadge}
+                    <span style="font-size:0.75rem">${isComplete ? '▼' : '▶'}</span>
+                </div>
+            </div>
+            <div class="phase-body" id="phase-body-${p.id}">
+                <div style="margin-bottom:0.5rem">
+                    ${p.modules.map(m => {
+                        const modId = `${p.id}-${m.name}`;
+                        const done = state.progress.completedModules.includes(modId);
+                        return `<div class="module-item">
+                            <span>${m.name}</span>
+                            <div>
+                                <div class="ai-prompt-group">
+                                    <button onclick="copyPrompt('${m.name}', 'learn')" class="btn btn-outline btn-sm" title="Copy LEARN prompt">📘L</button>
+                                    <button onclick="copyPrompt('${m.name}', 'practice')" class="btn btn-outline btn-sm" title="Copy PRACTICE prompt">📝P</button>
+                                    <button onclick="copyPrompt('${m.name}', 'test')" class="btn btn-outline btn-sm" title="Copy TEST prompt">📋T</button>
+                                    <button onclick="copyPrompt('${m.name}', 'project')" class="btn btn-outline btn-sm" title="Copy PROJECT prompt">🚀Pr</button>
+                                </div>
+                                ${done ? '<span class="badge badge-success">Done</span>' : `<button class="btn btn-outline btn-sm" onclick="markModule('${modId}', ${p.id})">Mark Done</button>`}
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+                <div style="display:flex;justify-content:flex-end;margin-top:0.5rem;border-top:1px solid var(--border);padding-top:0.5rem">
+                    ${isComplete ? '' : `<button class="btn ${isActive ? 'btn-success' : 'btn-outline'}" ${!isActive ? 'disabled' : ''} onclick="markPhaseComplete(${p.id})">
+                        ${isActive ? '✅ Mark Phase Complete' : 'Locked'}
+                    </button>`}
+                </div>
+            </div>
+        </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+function renderProjects() {
+    const sel = document.getElementById('project-phase');
+    const phases = getCareerPhases();
+    sel.innerHTML = phases.map(p => `<option value="${p.id}">Phase ${p.id}: ${p.name}</option>`).join('');
+    
+    const list = document.getElementById('project-list');
+    if (state.projects.length === 0) {
+        list.innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem">No projects added yet.</p>`;
+        return;
+    }
+    list.innerHTML = state.projects.map(p => `
+        <div class="module-item">
+            <div>
+                <strong>${p.name}</strong> <span class="badge ${p.status === 'done' ? 'badge-success' : 'badge-warning'}">${p.status}</span>
+                <br><span style="font-size:0.85rem;color:var(--text-muted)">Phase ${p.phaseId} • <a href="${p.url}" target="_blank" style="color:var(--text-accent)">${p.url || 'No URL'}</a></span>
+            </div>
+            <div>
+                <button class="btn btn-outline btn-sm" onclick="deleteProject('${p.id}')">🗑️</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderLogs() {
+    const list = document.getElementById('log-list');
+    if (state.logs.length === 0) {
+        list.innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem">No logs yet. Start your journey!</p>`;
+        return;
+    }
+    const recent = [...state.logs].reverse().slice(0, 10);
+    list.innerHTML = recent.map(log => `
+        <div class="log-item">
+            <div>
+                <strong>${log.date}</strong> — ${log.topic}
+                <span style="font-size:0.85rem;color:var(--text-muted);margin-left:0.5rem">${log.notes || ''}</span>
+            </div>
+            <div><span class="badge">${log.hours}h</span></div>
+        </div>
+    `).join('');
+}
+
+function renderCharts() {
+    const wkCtx = document.getElementById('weeklyChart').getContext('2d');
+    if (window._weeklyChart) window._weeklyChart.destroy();
+    
+    const weekData = [];
+    const labels = [];
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        labels.push(dateStr.slice(5));
+        const hours = state.logs.filter(l => l.date === dateStr).reduce((s, l) => s + l.hours, 0);
+        weekData.push(hours);
+    }
+    
+    window._weeklyChart = new Chart(wkCtx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Hours Studied',
+                data: weekData,
+                backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+    });
+
+    const dnCtx = document.getElementById('donutChart').getContext('2d');
+    if (window._donutChart) window._donutChart.destroy();
+    
+    const total = getTotalPhases();
+    const done = state.progress.completedPhases.length;
+    window._donutChart = new Chart(dnCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Completed', 'Remaining'],
+            datasets: [{
+                data: [done, Math.max(0, total - done)],
+                backgroundColor: ['rgba(34, 197, 94, 0.8)', 'rgba(226, 232, 240, 0.8)']
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+    });
+}
+
+function renderCareerGuide() {
+    const container = document.getElementById('guide-content');
+    const totalPhases = getTotalPhases();
+    const done = state.progress.completedPhases.length;
+    
+    let level = JOB_LEVELS[0];
+    for (let i = JOB_LEVELS.length - 1; i >= 0; i--) {
+        if (done >= JOB_LEVELS[i].minPhases) {
+            level = JOB_LEVELS[i];
+            break;
+        }
+    }
+    
+    let html = `
+        <div class="card" style="background:var(--bg-success);border-color:var(--border-success)">
+            <h3 style="color:var(--text-success)">Your Current Level: ${level.title}</h3>
+            <p style="color:var(--text-secondary)">${level.description}</p>
+        </div>
+        <div style="margin-top:1rem">
+            <p><strong>Phases Completed:</strong> ${done} / ${totalPhases}</p>
+            <p><strong>Total Hours Logged:</strong> ${getCompletedHours()}h</p>
+            <p><strong>Projects Tracked:</strong> ${state.projects.filter(p => p.status === 'done').length} completed</p>
+        </div>
+    `;
+    
+    let nextMilestone = null;
+    for (let j of JOB_LEVELS) {
+        if (j.minPhases > done) {
+            nextMilestone = j;
+            break;
+        }
+    }
+    if (nextMilestone) {
+        html += `
+        <div class="card" style="margin-top:1rem">
+            <div class="card-title">🚀 Next Milestone: ${nextMilestone.title}</div>
+            <p>Complete ${nextMilestone.minPhases - done} more phases to reach this level.</p>
+            <p style="font-size:0.9rem;color:var(--text-muted)">${nextMilestone.description}</p>
+        </div>
+        `;
+    } else {
+        html += `<div class="card" style="margin-top:1rem;background:var(--bg-pro);border-color:var(--border-pro)"><h3 style="color:var(--text-pro)">🎉 You have reached the highest level!</h3></div>`;
+    }
+
+    container.innerHTML = html;
+}
+
+function renderSettings() {
+    document.getElementById('settings-name').value = state.user.name || '';
+    document.getElementById('settings-hours').value = state.user.hoursPerDay || 4;
+    document.getElementById('dark-mode-toggle').checked = state.settings.darkMode;
+}
+
+// ==========================================
+// ACTION FUNCTIONS
+// ==========================================
+function startOnboarding() {
+    const name = document.getElementById('input-name').value.trim();
+    if (!name) { alert('براہ کرم اپنا نام لکھیں!'); return; }
+    const career = document.getElementById('input-career').value;
+    const hours = parseInt(document.getElementById('input-hours').value);
+    const days = parseInt(document.getElementById('input-days').value);
+    const startDate = document.getElementById('input-date').value;
+    
+    if (!startDate) { alert('براہ کرم شروع کرنے کی تاریخ منتخب کریں!'); return; }
+    
+    state.user = { name, career, hoursPerDay: hours, daysPerWeek: days, startDate };
+    saveState();
+    
+    document.getElementById('view-onboarding').classList.remove('active');
+    document.getElementById('main-app').style.display = 'block';
+    document.getElementById('view-dashboard').classList.add('active');
+    renderAll();
+}
+
+function renderAll() {
+    renderDashboard();
+    renderRoadmap();
+    renderProjects();
+    renderLogs();
+    renderCharts();
+    renderCareerGuide();
+    renderSettings();
+    applyDarkMode();
+}
+
+function navigate(viewId) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(viewId).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`[data-view="${viewId}"]`)?.classList.add('active');
+    
+    if (viewId === 'view-dashboard') renderDashboard();
+    if (viewId === 'view-roadmap') renderRoadmap();
+    if (viewId === 'view-projects') renderProjects();
+    if (viewId === 'view-logs') renderLogs();
+    if (viewId === 'view-guide') renderCareerGuide();
+    if (viewId === 'view-charts') renderCharts();
+    if (viewId === 'view-settings') renderSettings();
+}
+
+function togglePhase(id) {
+    const body = document.getElementById(`phase-body-${id}`);
+    if (body) {
+        body.classList.toggle('open');
+        const header = body.previousElementSibling;
+        const icon = header.querySelector('span:last-child');
+        icon.textContent = body.classList.contains('open') ? '▼' : '▶';
+    }
+}
+
+// Prompt Copy Logic
+function copyPrompt(moduleName, promptType) {
+    let mod = null;
+    for (let p of getCareerPhases()) {
+        for (let m of p.modules) {
+            if (m.name === moduleName) {
+                mod = m;
+                break;
+            }
+        }
+        if (mod) break;
+    }
+    if (!mod) { showToast("Prompt not found for this module."); return; }
+    
+    let prompt = "";
+    if (promptType === 'learn') prompt = mod.learn;
+    else if (promptType === 'practice') prompt = mod.practice;
+    else if (promptType === 'test') prompt = mod.test;
+    else if (promptType === 'project') prompt = mod.project;
+    
+    if (!prompt || prompt.startsWith("Replace with")) {
+        showToast("Prompt not yet filled in! Check the PHASES array.");
+        return;
+    }
+    
+    navigator.clipboard.writeText(prompt).then(() => {
+        showToast(`📋 ${promptType.toUpperCase()} prompt copied!`);
+    }).catch(() => {
+        const textarea = document.createElement('textarea');
+        textarea.value = prompt;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast(`📋 ${promptType.toUpperCase()} prompt copied!`);
+    });
+}
+
+function markModule(modId, phaseId) {
+    if (state.progress.completedModules.includes(modId)) return;
+    state.progress.completedModules.push(modId);
+    saveState();
+    
+    const phase = PHASES.find(p => p.id === phaseId);
+    if (phase) {
+        const allModules = phase.modules.map(m => `${phaseId}-${m.name}`);
+        const allDone = allModules.every(m => state.progress.completedModules.includes(m));
+        if (allDone && !state.progress.completedPhases.includes(phaseId)) {
+            if (confirm(`🎉 You've completed all modules in Phase ${phaseId}! Mark the whole phase as complete?`)) {
+                markPhaseComplete(phaseId);
+                return;
+            }
+        }
+    }
+    renderAll();
+}
+
+function markPhaseComplete(id) {
+    if (state.progress.completedPhases.includes(id)) return;
+    state.progress.completedPhases.push(id);
+    saveState();
+    renderAll();
+}
+
+function addProject(event) {
+    event.preventDefault();
+    const phaseId = parseInt(document.getElementById('project-phase').value);
+    const name = document.getElementById('project-name').value.trim();
+    const url = document.getElementById('project-url').value.trim();
+    const status = document.getElementById('project-status').value;
+    
+    if (!name) { alert('براہ کرم پروجیکٹ کا نام لکھیں!'); return; }
+    
+    state.projects.push({
+        id: 'proj_' + Date.now(),
+        phaseId,
+        name,
+        url,
+        status
+    });
+    saveState();
+    renderAll();
+    document.getElementById('project-form').reset();
+    showToast("✅ Project added successfully!");
+}
+
+function deleteProject(id) {
+    if (confirm('Delete this project?')) {
+        state.projects = state.projects.filter(p => p.id !== id);
+        saveState();
+        renderAll();
+    }
+}
+
+function logHours(event) {
+    event.preventDefault();
+    const hours = parseFloat(document.getElementById('log-hours').value);
+    const topic = document.getElementById('log-topic').value.trim();
+    const notes = document.getElementById('log-notes').value.trim();
+    if (!hours || !topic) { alert('براہ کرم گھنٹے اور موضوع لکھیں!'); return; }
+    
+    state.logs.push({
+        date: new Date().toISOString().split('T')[0],
+        hours: hours,
+        topic: topic,
+        notes: notes
+    });
+    saveState();
+    renderAll();
+    document.getElementById('log-form').reset();
+    document.getElementById('log-hours').value = 1;
+    showToast("✅ Study logged successfully!");
+}
+
+function toggleDarkMode() {
+    state.settings.darkMode = document.getElementById('dark-mode-toggle').checked;
+    saveState();
+    applyDarkMode();
+}
+
+function applyDarkMode() {
+    if (state.settings.darkMode) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
+}
+
+function updateSettings() {
+    const name = document.getElementById('settings-name').value.trim();
+    const hours = parseInt(document.getElementById('settings-hours').value);
+    if (name) state.user.name = name;
+    if (hours && hours > 0) state.user.hoursPerDay = hours;
+    state.settings.darkMode = document.getElementById('dark-mode-toggle').checked;
+    saveState();
+    renderAll();
+    showToast("✅ Settings updated!");
+}
+
+function exportProgress() {
+    const dataStr = JSON.stringify(state, null, 2);
+    const blob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'python_progress_backup.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast("📥 Progress exported!");
+}
+
+function resetAll() {
+    if (confirm('کیا آپ واقعی سارا progress ڈیلیٹ کرنا چاہتے ہیں؟ یہ عمل واپس نہیں ہو سکتا!')) {
+        localStorage.removeItem('pythonManagerState');
+        location.reload();
+    }
+}
+
+// ==========================================
+// NAVIGATION EVENTS
+// ==========================================
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        navigate(this.dataset.view);
+    });
+});
+
+// ==========================================
+// INIT
+// ==========================================
+document.getElementById('input-date').valueAsDate = new Date();
+
+if (loadState() && state.user && state.user.name) {
+    document.getElementById('view-onboarding').classList.remove('active');
+    document.getElementById('main-app').style.display = 'block';
+    document.getElementById('view-dashboard').classList.add('active');
+    renderAll();
+}
+</script>
+</body>
+</html>
